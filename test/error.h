@@ -1,8 +1,8 @@
-/* Handles error */
+#ifndef PROXY_ERROR_H
+#define PROXY_ERROR_H
 
-void error_message(const char *msg)
-{
-	perror(msg);
-	// exit now
-	exit(1)
-}
+/* Handles error */
+void error_message(const char *msg);
+
+
+#endif

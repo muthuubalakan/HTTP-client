@@ -1,5 +1,7 @@
 # proxy
 
-A simple proxy-server in C++
+Web proxy-server in Python
+
+Handles multiple clients asynchronously.
 
 `Client--->proxy--->Server`

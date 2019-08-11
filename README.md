@@ -7,8 +7,7 @@ HTTP Request througth proxy server.
 
 A simple functional example of HTTP request over proxy server.
 
-TODO:
-=====
+### TODO:
 - Handles Response data & getting all bytes
 - Get response as json
 - Make asynchronous socket connection.

@@ -1,13 +1,17 @@
-# HTTP proxy server
-
+# Breaking Proxy
+Making request beyond proxy.
 
 ## About:
 
-HTTP Proxy server is a proxy server module writting in python . 
+HTTP Request througth proxy server.
 
-## Requirements:
+A simple functional example of HTTP request over proxy server.
 
-Check the requirements.txt file.
+TODO:
+=====
+- Handles Response data & getting all bytes
+- Get response as json
+- Make asynchronous socket connection.
 
 ## Installation:
 
@@ -19,11 +23,13 @@ pip install -r requirements.txt
 
 
 ```python
-from socketproxy import Socketproxy
+from bpb import BreakingProxy
 
 proxy = "http://username:password@proxyserver.net:port"
 url = "www.example.com"
 
-s = Socketproxy(proxy, url)
-s.connect('GET')
+breaking_proxy = BreakingProxy(remote_host=url, proxy_url=proxy)
+response = breaking_proxy.connect('GET')
+response.status
+response.data
 ```

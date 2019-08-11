@@ -1,16 +1,22 @@
-# proxy
+# HTTP proxy server
 
-Web proxy-server in Python
 
-Handles multiple clients asynchronously.
+## About:
 
-`Client--->proxy--->Server`
+HTTP Proxy server is a proxy server module writting in python . 
 
-# Socketproxy
+## Requirements:
 
-Connect through socket with proxy
+Check the requirements.txt file.
 
-Usage:
+## Installation:
+
+Check your python version.
+
+```python
+pip install -r requirements.tx
+```
+
 
 ```python
 from socketproxy import Socketproxy

@@ -128,6 +128,11 @@ class BreakingProxy:
             sys.exit(EXIT)
         sock.sendall(self.make_request(method))
         resp = ''
-        while sock.recv:
-            resp + sock.recv(MAX)
+        while True:
+            data = sock.recv(MAX)
+            if data:
+                resp += data
+            else:
+                break
+
         return self.response(resp, response_status)

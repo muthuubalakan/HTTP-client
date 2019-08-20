@@ -50,4 +50,4 @@ server = TCPConnection(host=host, port=port)
 server.start()
 ```
 That's it. Your proxy server is running.
-You can use this simple proxy server to test & Develope BreakingProxy
+You can use this simple proxy server to test & Develop BreakingProxy

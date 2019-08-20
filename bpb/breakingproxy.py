@@ -73,7 +73,6 @@ class BreakingProxy:
                                        'username password proxy_host proxy_port')
         
         if not hasattr(self, 'proxy_url'):
-            print("Called")
             proxy_host, proxy_port = self.get_tuple(self.proxy)
             return proxy_credentials(self.username, self.password, proxy_host, proxy_port)
 
@@ -120,7 +119,8 @@ class BreakingProxy:
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((proxy_credentials.proxy_host, proxy_credentials.proxy_port))
-        sock.send(request.encode('utf-8'))
+        request = self.make_request(method)
+        sock.send(request)
         response = sock.recv(20)
         response_status = response.decode('utf-8').split('/')[1].split()[1]
         if int(response_status) != 200:

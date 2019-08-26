@@ -73,7 +73,6 @@ class BreakingProxy:
                                        'username password proxy_host proxy_port')
         
         if not hasattr(self, 'proxy_url'):
-            print("Called")
             proxy_host, proxy_port = self.get_tuple(self.proxy)
             return proxy_credentials(self.username, self.password, proxy_host, proxy_port)
 

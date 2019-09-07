@@ -123,10 +123,20 @@ class Request(BaseRequest):
    def getmethod(self):
       return self.extract_request_line.method
    
+   @property
    def geturl(self):
       url = self.extract_request_line.url.split('://')
-      remote_url = url[-1]
-      return remote_url
+      url = url[-1]
+      remote_url = url.split(':')
+      if len(remote_url) == 2:
+         host, port = remote_url
+         return (str(host), int(port))
+
+      elif len(remote_url) == 1:
+         return (str(remote_url[0]), None)
+      else:
+         return (str(url), None)
+
       
    def get_auth(self):
       proxy_auth = None
@@ -143,6 +153,21 @@ class Request(BaseRequest):
       assert self.get_auth[1].lower() == self.auth_scheme, (
          'Unsupported auth scheme.'
       )
+   
+   def formatted(self):
+      method = self.extract_request_line.method
+      url = self.extract_request_line.url
+      protocol = self.extract_request_line.url
+      if 'http' in protocol.lower():
+         protocol = 'HTTP/1.1'
+      if not 'http' or 'https' in str(url):
+         if url.startswith('www'):
+            url = f'https://{url}'
+         else:
+            url = f'https://www.{url}'
+      host, _ =self.geturl
+      client_rq = f'{method} {url} HTTP/1.1\r\nHost: {host}\r\nUser-Agent: python-requests/2.22.0\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n' 
+      return client_rq.encode('utf-8')
    
    
    def credentials(self):
@@ -175,8 +200,9 @@ class ProxyServer:
       self.port = port
       self.loop = asyncio.get_event_loop()
       
-   async def proxy_handler(self, client_socket):
+   def proxy_handler(self, client_socket):
       request = client_socket.recv(MAX_REQUEST_BYTES)
+      print(request)
       r = Request(
          request=request
       )
@@ -186,9 +212,15 @@ class ProxyServer:
          raise InvalidRequest(
             f'{r.getmethod()} not allowed'
          )
+      host, port = r.geturl
+      if not port:
+         port = 80
+      request = r.formatted()
+
+      print("This si ", host)
       ip = None
       try:
-         ip = socket.gethostbyname(r.geturl)
+         ip = socket.gethostbyname(host)
       except socket.error:
          raise DNSLookupError
       
@@ -207,15 +239,17 @@ class ProxyServer:
               break	
 
    async def _runprocess(self):
-      terminate = False
       async with AsyncTCPConnection(host=self.host, port=self.port) as connection:
-         client, _ = connection.accept()
-         logging.info(_)
+         terminate = False
          while not terminate:
-            try:
-               await self.proxy_handler(client)
-            except Exception:
-               terminate = True
+            client, _ = connection.accept()
+            d = threading.Thread(target=self.proxy_handler, args=(client, ))
+            d.setDaemon(True)
+            d.start()
                
    def start(self):
       self.loop.run_until_complete(self._runprocess())
+
+
+p = ProxyServer(host="localhost", port=9089)
+p.start()
